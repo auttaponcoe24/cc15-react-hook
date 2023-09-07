@@ -5,8 +5,9 @@ import "./index.css";
 // s1 :
 
 function App() {
-	const [category, setCategory] = useState("");
+	const [category, setCategory] = useState("not-select");
 	const [count, setCount] = useState(0);
+	const [data, setData] = useState([]);
 
 	// Syntax : useEffect(setUp, dependenciesArray)
 	// ################################################
@@ -40,15 +41,16 @@ function App() {
 				let res = await fetch(`${BASE_URL}/${category}`, {
 					method: "GET",
 				});
-				let data = await res.json();
-				console.log(data);
+				let dataJSON = await res.json();
+				setData(dataJSON);
+				console.log(dataJSON);
 			} catch (err) {
 				console.log(err);
 			}
 		}
 
 		// CALL FN
-		if (category) fetchLists();
+		if (category !== "not-select") fetchLists();
 	}, [category]);
 
 	console.log("render, rerender");
@@ -66,7 +68,11 @@ function App() {
 			</div>
 
 			<ul className="lists">
-				<li className="lists__item">item-1</li>
+				{data.map((obj) => (
+					<li className="lists__item" key={obj.id}>
+						{obj.body || obj.name}
+					</li>
+				))}
 			</ul>
 		</>
 	);
